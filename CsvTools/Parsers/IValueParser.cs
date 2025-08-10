@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace CsvTools.NEU;
+namespace CsvTools.Parsers;
 
 public interface IValueParser< out T>
 {

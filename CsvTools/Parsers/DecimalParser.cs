@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace CsvTools.NEU;
+namespace CsvTools.Parsers;
 
 public class DecimalParser ( NumberStyles numberStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol ) : IValueParser< decimal >
 {

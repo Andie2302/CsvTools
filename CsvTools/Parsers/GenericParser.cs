@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 
-namespace CsvTools.NEU;
+namespace CsvTools.Parsers;
 
 public class GenericParser<T> : IValueParser<T>
 {
