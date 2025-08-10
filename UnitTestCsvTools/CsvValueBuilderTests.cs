@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using CsvTools.Builders;
+
 
 namespace UnitTestCsvTools;
 
@@ -11,7 +11,7 @@ public class CsvValueBuilderTests
         const string inputString = "1.234,56";
         var germanCulture = new CultureInfo ( "de-DE" );
         const decimal expectedValue = 1234.56m;
-        var builder = new CsvValueBuilder< decimal > ( inputString );
+        var builder = new CsvTools.NEU.CsvValueBuilder< decimal > ( inputString );
         var csvValue = builder.WithCulture ( germanCulture ).Build();
         Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
@@ -20,9 +20,9 @@ public class CsvValueBuilderTests
     public void Build_WithInvalidString_ShouldReturnDefaultValue()
     {
         const string inputString = "abc";
-        var builder = new CsvValueBuilder< decimal > ( inputString );
+        var builder = new CsvTools.NEU.CsvValueBuilder< decimal > ( inputString );
         var csvValue = builder.Build();
-        Assert.Equal ( default , csvValue.CurrentValue.Value );
+        Assert.Equal ( 0 , csvValue.CurrentValue.Value );
     }
 
     [ Theory ]
@@ -37,7 +37,7 @@ public class CsvValueBuilderTests
     public void Build_WithVariousDecimalInputs_ShouldParseCorrectly ( string? cultureName , string? inputString , decimal expectedValue )
     {
         var culture = cultureName != null ? new CultureInfo ( cultureName ) : CultureInfo.InvariantCulture;
-        var builder = new CsvValueBuilder< decimal > ( inputString );
+        var builder = new CsvTools.NEU.CsvValueBuilder< decimal > ( inputString );
         var csvValue = builder.WithCulture ( culture ).Build();
         Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
@@ -52,7 +52,7 @@ public class CsvValueBuilderTests
     {
         var expectedValue = new DateTime ( year , month , day );
         var culture = new CultureInfo ( cultureName );
-        var builder = new CsvValueBuilder< DateTime > ( inputString );
+        var builder = new CsvTools.NEU.CsvValueBuilder< DateTime > ( inputString );
         var csvValue = builder.WithCulture ( culture ).Build();
         Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
@@ -65,7 +65,7 @@ public class CsvValueBuilderTests
     {
         var expectedValue = default ( DateTime );
         var culture = new CultureInfo ( cultureName );
-        var builder = new CsvValueBuilder< DateTime > ( inputString );
+        var builder = new CsvTools.NEU.CsvValueBuilder< DateTime > ( inputString );
         var csvValue = builder.WithCulture ( culture ).Build();
         Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
