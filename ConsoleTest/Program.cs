@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using CsvTools.Parsers;
 
 // Detaillierte Analyse des Problems
 var culture = new CultureInfo("en-US");
@@ -55,13 +54,13 @@ foreach (var style in styleVariants)
 Console.WriteLine();
 
 // Test der Parser-Implementierung
-var parser = new DecimalParser();
-var canParse = parser.CanParse(testInput, culture);
-var parseResult = parser.Parse(testInput, culture);
+//var parser = new DecimalParser();
+//var canParse = parser.CanParse(testInput, culture);
+//var parseResult = parser.Parse(testInput, culture);
 
-Console.WriteLine($"DecimalParser Results:");
-Console.WriteLine($"CanParse('{testInput}'): {canParse}");
-Console.WriteLine($"Parse('{testInput}'): {parseResult}");
+//Console.WriteLine($"DecimalParser Results:");
+//Console.WriteLine($"CanParse('{testInput}'): {canParse}");
+//Console.WriteLine($"Parse('{testInput}'): {parseResult}");
 
 // Prüfe, ob es an der NumberStyles-Konstante liegt
 var defaultStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
