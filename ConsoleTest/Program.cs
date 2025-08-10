@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using CsvTools.Values;
 
 // Detaillierte Analyse des Problems
 var culture = new CultureInfo("en-US");
@@ -50,6 +51,9 @@ foreach (var style in styleVariants)
     var success = decimal.TryParse(testInput, style, culture, out var value);
     Console.WriteLine($"{style}: Success: {success}, Value: {value}");
 }
+
+CsvValue< string > a = default;
+a.WithNewValue ( "1,2,3,4,5" );
 
 Console.WriteLine();
 
