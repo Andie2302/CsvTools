@@ -3,52 +3,39 @@ using System.Globalization;
 
 namespace CsvTools.Parsers;
 
-public class GenericParser<T> : IValueParser<T>
+public class GenericParser < T > : IValueParser< T >
 {
-    public T? Parse(string? input, CultureInfo culture)
+    public T? Parse ( string? input , CultureInfo culture )
     {
-        if (input is null) {
-            return default;
-        }
+        if ( input is null ) { return default; }
 
-        try
-        {
-            var converter = TypeDescriptor.GetConverter(typeof(T));
+        try {
+            var converter = TypeDescriptor.GetConverter ( typeof ( T ) );
 
-            if (converter.CanConvertFrom(typeof(string))) {
-                return (T?)converter.ConvertFromString(null, culture, input);
-            }
+            if ( converter.CanConvertFrom ( typeof ( string ) ) ) { return (T?) converter.ConvertFromString ( null , culture , input ); }
 
-            return (T?)Convert.ChangeType(input, typeof(T), culture);
+            return (T?) Convert.ChangeType ( input , typeof ( T ) , culture );
         }
-        catch (Exception)
-        {
-            return default;
-        }
+        catch ( Exception ) { return default; }
     }
 
-    public bool CanParse(string? input)
+    public bool CanParse ( string? input , CultureInfo culture )
     {
-        if (input is null) {
-            return false;
-        }
+        if ( input is null ) { return false; }
 
-        try
-        {
-            var converter = TypeDescriptor.GetConverter(typeof(T));
-            
-            if (converter.CanConvertFrom(typeof(string)))
-            {
-                converter.ConvertFromString(null, CultureInfo.InvariantCulture, input);
+        try {
+            var converter = TypeDescriptor.GetConverter ( typeof ( T ) );
+
+            if ( converter.CanConvertFrom ( typeof ( string ) ) ) {
+                converter.ConvertFromString ( null , culture , input );
+
                 return true;
             }
 
-            Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
+            _ = Convert.ChangeType ( input , typeof ( T ) , culture );
+
             return true;
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        catch ( Exception ) { return false; }
     }
 }

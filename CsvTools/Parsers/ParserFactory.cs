@@ -22,13 +22,12 @@ public static class ParserFactory
 
     private static IValueParser<T> CreateParser<T>(ParserConfiguration? configuration = null)
     {
-        // Hole den zugrundeliegenden Typ, falls es ein Nullable<T> ist, sonst den Typ selbst.
         var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
         if (type == typeof(DateTime))
         {
             var dateTimeStyles = configuration?.DateTimeStyles ?? DateTimeStyles.None;
-            // Der Cast hier wird etwas komplexer, aber es ist typsicher.
+
             return (IValueParser<T>)new DateTimeParser(dateTimeStyles);
         }
 

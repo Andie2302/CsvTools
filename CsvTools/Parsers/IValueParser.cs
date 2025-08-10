@@ -2,8 +2,8 @@
 
 namespace CsvTools.Parsers;
 
-public interface IValueParser< out T>
+public interface IValueParser < out T >
 {
-    T? Parse(string? input, CultureInfo culture);
-    bool CanParse(string? input);
+    T? Parse ( string? input , CultureInfo culture );
+    bool CanParse ( string? input , CultureInfo culture );
 }

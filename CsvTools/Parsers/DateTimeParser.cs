@@ -7,9 +7,10 @@ public class DateTimeParser ( DateTimeStyles dateTimeStyles = DateTimeStyles.Non
     public DateTime Parse ( string? input , CultureInfo culture )
     {
         if ( string.IsNullOrEmpty ( input ) ) { return default; }
+
         try { return DateTime.TryParse ( input , culture , dateTimeStyles , out var result ) ? result : default; }
         catch ( Exception ) { return default; }
     }
 
-    public bool CanParse ( string? input ) => !string.IsNullOrEmpty ( input ) && DateTime.TryParse ( input , CultureInfo.InvariantCulture , dateTimeStyles , out _ );
+    public bool CanParse ( string? input , CultureInfo culture ) => !string.IsNullOrEmpty ( input ) && DateTime.TryParse ( input , culture , dateTimeStyles , out _ );
 }

@@ -4,20 +4,13 @@ namespace CsvTools.Parsers;
 
 public class DecimalParser ( NumberStyles numberStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol ) : IValueParser< decimal >
 {
-    public decimal Parse(string? input, CultureInfo culture)
+    public decimal Parse ( string? input , CultureInfo culture )
     {
-        if (string.IsNullOrEmpty(input)) {
-            return 0;
-        }
+        if ( string.IsNullOrEmpty ( input ) ) { return 0; }
 
-        try {
-            return decimal.TryParse(input, numberStyles, culture, out var result) ? result : 0;
-        }
-        catch (Exception)
-        {
-            return 0;
-        }
+        try { return decimal.TryParse ( input , numberStyles , culture , out var result ) ? result : 0; }
+        catch ( Exception ) { return 0; }
     }
 
-    public bool CanParse(string? input) => !string.IsNullOrEmpty(input) && decimal.TryParse(input, numberStyles, CultureInfo.InvariantCulture, out _);
+    public bool CanParse ( string? input , CultureInfo culture ) => !string.IsNullOrEmpty ( input ) && decimal.TryParse ( input , numberStyles , culture , out _ );
 }

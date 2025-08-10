@@ -63,10 +63,10 @@ public class DateTimeParserTests
     [ InlineData ( "24.12.2025" ) ]
     [ InlineData ( "12/24/2025" ) ]
     [ InlineData ( "2025/12/24" ) ]
-    public void CanParse_WithValidDateTime_ShouldReturnTrue ( string input )
+    public void CanParse_WithValidDateTime_ShouldReturnTrue ( string input ,CultureInfo culture)
     {
         var parser = new DateTimeParser();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input, culture );
         Assert.True ( result );
     }
 
@@ -75,18 +75,18 @@ public class DateTimeParserTests
     [ InlineData ( "" ) ]
     [ InlineData ( "32/12/2025" ) ]
     [ InlineData ( "abc123" ) ]
-    public void CanParse_WithInvalidDateTime_ShouldReturnFalse ( string input )
+    public void CanParse_WithInvalidDateTime_ShouldReturnFalse ( string input , CultureInfo culture)
     {
         var parser = new DateTimeParser();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input ,culture);
         Assert.False ( result );
     }
 
     [ Fact ]
-    public void CanParse_WithNull_ShouldReturnFalse()
+    public void CanParse_WithNull_ShouldReturnFalse(CultureInfo culture)
     {
         var parser = new DateTimeParser();
-        var result = parser.CanParse ( null );
+        var result = parser.CanParse ( null ,culture);
         Assert.False ( result );
     }
 
