@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
+using CsvTools.Values;
 
-namespace CsvTools.Values;
+namespace CsvTools.Builders;
 
 public class CsvValueBuilder < T > ( string? originalString )
 {
