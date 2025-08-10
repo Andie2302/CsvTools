@@ -1,34 +1,26 @@
 ﻿namespace CsvTools.Values;
 
-public interface ICsvValue < T > : ICsvValue
+public readonly record struct CsvValue < T >
 {
-    new T? InitialValue { get; }
-    new T? CurrentValue { get; }
-    CsvValue< T > WithNewValue ( T? newValue );
-    CsvValue< T > ResetToOriginal();
-    bool HasValue ( T? value );
-}
-
-public readonly record struct CsvValue < T > : ICsvValue< T >
-{
-    public string? OriginalString { get; init; }
-    public T? InitialValue { get; init; }
+    public CsvCreationContext< T > Context { get; init; }
     public T? CurrentValue { get; init; }
-    public bool IsModified { get; init; }
-    object? ICsvValue.InitialValue => InitialValue;
-    object? ICsvValue.CurrentValue => CurrentValue;
+    public string? OriginalString => Context.OriginalString;
+    public T? InitialValue => Context.InitialValue;
+    public bool IsModified => !EqualityComparer< T >.Default.Equals ( InitialValue , CurrentValue );
 
-    private CsvValue ( string? originalString , T? initialValue , T? currentValue )
+    private CsvValue ( CsvCreationContext< T > context , T? currentValue )
     {
-        OriginalString = originalString;
-        InitialValue = initialValue;
+        Context = context;
         CurrentValue = currentValue;
-        IsModified = !object.Equals(initialValue, currentValue);
     }
 
-    public static CsvValue< T > CreateInitial ( string? originalString , T? parsedValue ) { return new CsvValue< T > ( originalString , parsedValue , parsedValue ); }
-    public CsvValue< T > WithNewValue ( T? newValue ) { return new CsvValue< T > ( OriginalString , InitialValue , newValue ); }
-    public CsvValue< T > ResetToOriginal() { return new CsvValue< T > ( OriginalString , InitialValue , InitialValue ); }
-    public bool HasValue(T? value) { return object.Equals(CurrentValue, value); }
-    public override string ToString() { return CurrentValue?.ToString() ?? string.Empty; }
+    public static CsvValue< T > CreateInitial ( string? originalString , T? parsedValue )
+    {
+        var context = new CsvCreationContext< T > ( originalString , parsedValue );
+
+        return new CsvValue< T > ( context , parsedValue );
+    }
+
+    public CsvValue< T > WithNewValue ( T? newValue ) { return new CsvValue< T > ( Context , newValue ); }
+    public CsvValue< T > ResetToOriginal() { return new CsvValue< T > ( Context , Context.InitialValue ); }
 }
