@@ -1,43 +1,72 @@
-﻿// CsvTools.Tests/CsvValueBuilderTests.cs
-
-using System.Globalization;
+﻿using System.Globalization;
 using CsvTools.Builders;
-
-// <- Wichtig: using für xUnit hinzufügen
 
 namespace UnitTestCsvTools;
 
 public class CsvValueBuilderTests
 {
-    [Fact]
+    [ Fact ]
     public void Build_WithValidGermanDecimal_ShouldParseCorrectly()
     {
-        // ARRANGE
-        var inputString = "1.234,56";
-        var germanCulture = new CultureInfo("de-DE");
-        var expectedValue = 1234.56m;
-
-        // ACT
-        var builder = new CsvValueBuilder<decimal>(inputString);
-        var csvValue = builder.WithCulture(germanCulture).Build();
-
-        // ASSERT
-        Assert.Equal(expectedValue, csvValue.CurrentValue.Value);
+        const string inputString = "1.234,56";
+        var germanCulture = new CultureInfo ( "de-DE" );
+        const decimal expectedValue = 1234.56m;
+        var builder = new CsvValueBuilder< decimal > ( inputString );
+        var csvValue = builder.WithCulture ( germanCulture ).Build();
+        Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
 
-    [Fact]
+    [ Fact ]
     public void Build_WithInvalidString_ShouldReturnDefaultValue()
     {
-        // ARRANGE
-        // "abc" kann definitiv nicht in eine Zahl umgewandelt werden.
-        var inputString = "abc";
-
-        // ACT
-        var builder = new CsvValueBuilder<decimal>(inputString);
+        const string inputString = "abc";
+        var builder = new CsvValueBuilder< decimal > ( inputString );
         var csvValue = builder.Build();
+        Assert.Equal ( default , csvValue.CurrentValue.Value );
+    }
 
-        // ASSERT
-        // Wir erwarten, dass der Wert 'default' (also 0m) ist, weil die Umwandlung fehlschlägt.
-        Assert.Equal(default, csvValue.CurrentValue.Value);
+    [ Theory ]
+    [ InlineData ( "de-DE" , "1.234,56" , 1234.56 ) ]
+    [ InlineData ( "en-US" , "1,234.56" , 1234.56 ) ]
+    [ InlineData ( "fr-FR" , "1 234,56" , 1234.56 ) ]
+    [ InlineData ( "de-DE" , "-99,9" , -99.9 ) ]
+    [ InlineData ( "en-US" , "123456" , 123456 ) ]
+    [ InlineData ( "en-US" , "invalid" , 0 ) ]
+    [ InlineData ( "de-DE" , "" , 0 ) ]
+    [ InlineData ( null , null , 0 ) ]
+    public void Build_WithVariousDecimalInputs_ShouldParseCorrectly ( string? cultureName , string? inputString , decimal expectedValue )
+    {
+        var culture = cultureName != null ? new CultureInfo ( cultureName ) : CultureInfo.InvariantCulture;
+        var builder = new CsvValueBuilder< decimal > ( inputString );
+        var csvValue = builder.WithCulture ( culture ).Build();
+        Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
+    }
+
+    [ Theory ]
+    [ InlineData ( "de-DE" , "24.12.2025" , 2025 , 12 , 24 ) ]
+    [ InlineData ( "en-US" , "12/24/2025" , 2025 , 12 , 24 ) ]
+    [ InlineData ( "en-GB" , "24/12/2025" , 2025 , 12 , 24 ) ]
+    [ InlineData ( "fr-FR" , "24/12/2025" , 2025 , 12 , 24 ) ]
+    [ InlineData ( "ja-JP" , "2025/12/24" , 2025 , 12 , 24 ) ]
+    public void Build_WithVariousValidDateTimeInputs_ShouldParseCorrectly ( string cultureName , string inputString , int year , int month , int day )
+    {
+        var expectedValue = new DateTime ( year , month , day );
+        var culture = new CultureInfo ( cultureName );
+        var builder = new CsvValueBuilder< DateTime > ( inputString );
+        var csvValue = builder.WithCulture ( culture ).Build();
+        Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
+    }
+
+    [ Theory ]
+    [ InlineData ( "de-DE" , "ungültig" ) ]
+    [ InlineData ( "en-US" , "" ) ]
+    [ InlineData ( "en-US" , null ) ]
+    public void Build_WithInvalidDateTimeInput_ShouldReturnDefault ( string cultureName , string? inputString )
+    {
+        var expectedValue = default ( DateTime );
+        var culture = new CultureInfo ( cultureName );
+        var builder = new CsvValueBuilder< DateTime > ( inputString );
+        var csvValue = builder.WithCulture ( culture ).Build();
+        Assert.Equal ( expectedValue , csvValue.CurrentValue.Value );
     }
 }
