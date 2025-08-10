@@ -89,10 +89,10 @@ public class GenericParserTests
     [ InlineData ( "123" ) ]
     [ InlineData ( "-456" ) ]
     [ InlineData ( "0" ) ]
-    public void CanParse_WithValidInteger_ShouldReturnTrue ( string input )
+    public void CanParse_WithValidInteger_ShouldReturnTrue ( string input , CultureInfo culture )
     {
         var parser = new GenericParser< int >();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input , culture );
         Assert.True ( result );
     }
 
@@ -100,18 +100,18 @@ public class GenericParserTests
     [ InlineData ( "invalid" ) ]
     [ InlineData ( "abc" ) ]
     [ InlineData ( "12abc" ) ]
-    public void CanParse_WithInvalidInteger_ShouldReturnFalse ( string input )
+    public void CanParse_WithInvalidInteger_ShouldReturnFalse ( string input , CultureInfo culture )
     {
         var parser = new GenericParser< int >();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input , culture );
         Assert.False ( result );
     }
 
     [ Fact ]
-    public void CanParse_WithNull_ShouldReturnFalse()
+    public void CanParse_WithNull_ShouldReturnFalse ( CultureInfo culture )
     {
         var parser = new GenericParser< int >();
-        var result = parser.CanParse ( null );
+        var result = parser.CanParse ( null , culture );
         Assert.False ( result );
     }
 
@@ -120,10 +120,10 @@ public class GenericParserTests
     [ InlineData ( "false" ) ]
     [ InlineData ( "1" ) ]
     [ InlineData ( "0" ) ]
-    public void CanParse_WithValidBoolean_ShouldReturnTrue ( string input )
+    public void CanParse_WithValidBoolean_ShouldReturnTrue ( string input , CultureInfo culture )
     {
         var parser = new GenericParser< bool >();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input , culture );
         Assert.True ( result );
     }
 
@@ -133,10 +133,10 @@ public class GenericParserTests
     [ InlineData ( "-1" ) ]
     [ InlineData ( "yes" ) ]
     [ InlineData ( "no" ) ]
-    public void CanParse_WithInvalidBoolean_ShouldReturnFalse ( string input )
+    public void CanParse_WithInvalidBoolean_ShouldReturnFalse ( string input,CultureInfo culture )
     {
         var parser = new GenericParser< bool >();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input,culture );
         Assert.False ( result );
     }
 

@@ -68,10 +68,10 @@ public class DecimalParserTests
     [ InlineData ( "123456" ) ]
     [ InlineData ( "$1,234.56" ) ]
     [ InlineData ( "€1.234,56" ) ]
-    public void CanParse_WithValidDecimal_ShouldReturnTrue ( string input )
+    public void CanParse_WithValidDecimal_ShouldReturnTrue ( string input ,CultureInfo culture)
     {
         var parser = new DecimalParser();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input ,culture);
         Assert.True ( result );
     }
 
@@ -82,18 +82,18 @@ public class DecimalParserTests
     [ InlineData ( "1,2,3" ) ]
     [ InlineData ( "text123" ) ]
     [ InlineData ( "123text456" ) ]
-    public void CanParse_WithInvalidDecimal_ShouldReturnFalse ( string input )
+    public void CanParse_WithInvalidDecimal_ShouldReturnFalse ( string input ,CultureInfo culture)
     {
         var parser = new DecimalParser();
-        var result = parser.CanParse ( input );
+        var result = parser.CanParse ( input ,culture);
         Assert.False ( result );
     }
 
     [ Fact ]
-    public void CanParse_WithNull_ShouldReturnFalse()
+    public void CanParse_WithNull_ShouldReturnFalse(CultureInfo culture)
     {
         var parser = new DecimalParser();
-        var result = parser.CanParse ( null );
+        var result = parser.CanParse ( null ,culture);
         Assert.False ( result );
     }
 

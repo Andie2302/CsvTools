@@ -52,7 +52,7 @@ public class RefactoredCsvValueBuilderTests
 
     private class TestCustomParser : IValueParser< int >
     {
-        public int Parse ( string? input , CultureInfo culture ) { return 42; }
-        public bool CanParse ( string? input ) { return true; }
+        public int Parse ( string? input , CultureInfo culture ) => 42;
+        public bool CanParse ( string? input , CultureInfo culture ) => true;
     }
 }
