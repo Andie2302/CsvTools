@@ -63,7 +63,7 @@ Console.WriteLine();
 //Console.WriteLine($"Parse('{testInput}'): {parseResult}");
 
 // Prüfe, ob es an der NumberStyles-Konstante liegt
-var defaultStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+const NumberStyles defaultStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
 Console.WriteLine($"\nDetailed NumberStyles analysis:");
 Console.WriteLine($"NumberStyles.Number: {NumberStyles.Number}");
 Console.WriteLine($"NumberStyles.AllowCurrencySymbol: {NumberStyles.AllowCurrencySymbol}");
@@ -73,7 +73,7 @@ Console.WriteLine($"Combined: {defaultStyles}");
 Console.WriteLine($"\nTesting components of NumberStyles.Number:");
 var numberComponents = new[] {
     NumberStyles.AllowLeadingWhite,
-    NumberStyles.AllowTrailingWhite, 
+    NumberStyles.AllowTrailingWhite,
     NumberStyles.AllowLeadingSign,
     NumberStyles.AllowThousands,
     NumberStyles.AllowDecimalPoint
