@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvTools", "CsvTools\CsvToo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestCsvTools", "UnitTestCsvTools\UnitTestCsvTools.csproj", "{DDD32BC9-C1A5-4D08-84FC-C9205C5158D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{B88A7998-8C23-4348-B6B1-926C54F28267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{DDD32BC9-C1A5-4D08-84FC-C9205C5158D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDD32BC9-C1A5-4D08-84FC-C9205C5158D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDD32BC9-C1A5-4D08-84FC-C9205C5158D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88A7998-8C23-4348-B6B1-926C54F28267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88A7998-8C23-4348-B6B1-926C54F28267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88A7998-8C23-4348-B6B1-926C54F28267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88A7998-8C23-4348-B6B1-926C54F28267}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
