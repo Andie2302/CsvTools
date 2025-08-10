@@ -18,4 +18,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CsvTools\CsvTools.csproj" />
+    </ItemGroup>
+
 </Project>
