@@ -2,6 +2,8 @@
 using CsvTools.Builders;
 using CsvTools.Parsers;
 
+namespace UnitTestCsvTools.Tests;
+
 public class RefactoredCsvValueBuilderTests
 {
     [ Theory ]

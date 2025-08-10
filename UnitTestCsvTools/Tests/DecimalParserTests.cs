@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using CsvTools.Parsers;
 
+namespace UnitTestCsvTools.Tests;
+
 public class DecimalParserTests
 {
     [ Theory ]
