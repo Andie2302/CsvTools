@@ -25,8 +25,17 @@ public class CsvValueBuilder < T > ( string? originalString )
 
     private static T? ParseString ( string? s , CultureInfo c )
     {
-        if ( s is null ) {
-            return default;
+        if ( s is null ) { return default; }
+
+        if ( typeof ( T ) == typeof ( decimal ) ) {
+            try {
+                var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+
+                if ( decimal.TryParse ( s , style , c , out var result ) ) { return (T) (object) result; }
+
+                return default;
+            }
+            catch ( Exception ) { return default; }
         }
 
         try {
