@@ -20,21 +20,23 @@ public static class ParserFactory
 
     public static IValueParser< T > GetParser < T > ( ParserConfiguration configuration ) { return CreateParser< T > ( configuration ); }
 
-    private static IValueParser< T > CreateParser < T > ( ParserConfiguration? configuration = null )
+    private static IValueParser<T> CreateParser<T>(ParserConfiguration? configuration = null)
     {
-        var type = typeof ( T );
+        // Hole den zugrundeliegenden Typ, falls es ein Nullable<T> ist, sonst den Typ selbst.
+        var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
-        if ( type == typeof ( DateTime ) || type == typeof ( DateTime? ) ) {
+        if (type == typeof(DateTime))
+        {
             var dateTimeStyles = configuration?.DateTimeStyles ?? DateTimeStyles.None;
-
-            return (IValueParser< T >) new DateTimeParser ( dateTimeStyles );
+            // Der Cast hier wird etwas komplexer, aber es ist typsicher.
+            return (IValueParser<T>)new DateTimeParser(dateTimeStyles);
         }
 
-        if ( type != typeof ( decimal ) && type != typeof ( decimal? ) ) { return new GenericParser< T >(); }
+        if ( type != typeof ( decimal ) ) { return new GenericParser< T >(); }
 
         var numberStyles = configuration?.NumberStyles ?? NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
+        return (IValueParser<T>)new DecimalParser(numberStyles);
 
-        return (IValueParser< T >) new DecimalParser ( numberStyles );
     }
 
     public static void ClearCache() { CachedParsers.Clear(); }
