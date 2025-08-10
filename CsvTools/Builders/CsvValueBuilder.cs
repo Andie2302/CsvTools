@@ -27,6 +27,15 @@ public class CsvValueBuilder < T > ( string? originalString )
     {
         if ( s is null ) { return default; }
 
+        if ( typeof ( T ) == typeof ( DateTime ) ) {
+            try {
+                if ( DateTime.TryParse ( s , c , DateTimeStyles.None , out var result ) ) { return (T) (object) result; }
+
+                return default;
+            }
+            catch ( Exception ) { return default; }
+        }
+
         if ( typeof ( T ) == typeof ( decimal ) ) {
             try {
                 var style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
