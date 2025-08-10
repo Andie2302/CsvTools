@@ -5,7 +5,7 @@ namespace CsvTools.Values;
 public readonly record struct CsvValue < T >
 {
     public CsvCreationContext< T > Original { get; init; }
-    public InvariantValue< T > Current { get; init; }
+    public Invariant< T > Current { get; init; }
     public string? ToString ( IFormatProvider cultureInfo ) => string.Format ( cultureInfo , "{0}" , Current.Value );
     public override string? ToString() => ToString ( CultureInfo.InvariantCulture );
 }
