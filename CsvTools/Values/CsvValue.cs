@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace CsvTools.Values;
+﻿namespace CsvTools.Values;
 
 public readonly record struct CsvValue < T >
 {
@@ -8,23 +6,34 @@ public readonly record struct CsvValue < T >
     public Invariant< T > Current { get; init; }
 }
 
-public static class CsvValueXxxExtensions
+public static class CsvValueExtensionsFluentApi
 {
-    public static CsvValue< T > WithNewValue < T > ( this CsvValue< T > current , T? newValue )
-    {
-        return current;
-    }
+    public static CsvValue< T > WithNewValue < T > ( this CsvValue< T > csvValue , T? newValue ) => csvValue with { Current = new Invariant< T > ( newValue ) };
 }
 
-public static class CsvValueExtensions2
+
+public static class CsvValueExtensionsStatic
 {
-    public static bool TryGetValue < T > ( this CsvValue< T > element , [ NotNullWhen ( true ) ] out T? currentValue )
+    public static bool TryGetCurrentValue < T > ( this CsvValue< T > element , out T? currentValue )
     {
         currentValue = element.Current.Value;
         return currentValue != null;
     }
-    public static T? GetValueOrDefault < T > ( this CsvValue< T > element , T? defaultValue ) => element.Current.Value ?? defaultValue;
+
+    public static bool TryGetOriginalValue < T > ( this CsvValue< T > element , out T? currentValue )
+    {
+        currentValue = element.Current.Value;
+        return currentValue != null;
+    }
+    
+    public static bool TryGetOriginalString < T > ( this CsvValue< T > element , out T? currentValue )
+    {
+        currentValue = element.Original.Value.Value;
+        return currentValue != null;
+    }
+
 }
+
 
 // public string? ToString ( IFormatProvider cultureInfo ) => string.Format ( cultureInfo , "{0}" , Current.Value );
 // public override string? ToString() => ToString ( CultureInfo.InvariantCulture );
@@ -32,10 +41,3 @@ public static class CsvValueExtensions2
 // public bool IsModified => !EqualityComparer< InvariantValue< T > >.Default.Equals ( InitialValue , CurrentValue );
 // 
 // public CsvValue< T > ResetToOriginal() { return this with { CurrentValue = InitialValue }; }
-
-public static class CsvValueExtensions
-{
-    // public static CsvValue< T > WithNewValue< T > ( this CsvValue< T > value , T? newValue ) { return value.WithNewValue ( newValue ); }
-    // public string? OriginalString => Context.OriginalString;
-    // public InvariantValue< T > InitialValue => Context.InitialValue;
-}
