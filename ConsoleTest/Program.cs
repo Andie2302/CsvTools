@@ -1,9 +1,7 @@
 ﻿using System.Globalization;
-using CsvTools.Rest;
 using CsvTools.Values;
 using CsvTools.Values.Extensions;
 
-// Detaillierte Analyse des Problems
 var culture = new CultureInfo("en-US");
 var testInput = "1,2,3,4,5";
 
@@ -18,7 +16,6 @@ var numberStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
 Console.WriteLine($"Using NumberStyles: {numberStyles}");
 Console.WriteLine();
 
-// Test verschiedene Varianten
 var testCases = new[] {
     "1,2,3,4,5",
     "1,234,567",
@@ -38,7 +35,6 @@ foreach (var input in testCases)
 
 Console.WriteLine();
 
-// Test mit verschiedenen NumberStyles
 var styleVariants = new[] {
     NumberStyles.Number,
     NumberStyles.Number | NumberStyles.AllowCurrencySymbol,
@@ -58,24 +54,11 @@ CsvValue< string > a = default;
 a.WithNewValue ( "1,2,3,4,5" );
 
 Console.WriteLine();
-
-// Test der Parser-Implementierung
-//var parser = new DecimalParser();
-//var canParse = parser.CanParse(testInput, culture);
-//var parseResult = parser.Parse(testInput, culture);
-
-//Console.WriteLine($"DecimalParser Results:");
-//Console.WriteLine($"CanParse('{testInput}'): {canParse}");
-//Console.WriteLine($"Parse('{testInput}'): {parseResult}");
-
-// Prüfe, ob es an der NumberStyles-Konstante liegt
 const NumberStyles defaultStyles = NumberStyles.Number | NumberStyles.AllowCurrencySymbol;
 Console.WriteLine($"\nDetailed NumberStyles analysis:");
 Console.WriteLine($"NumberStyles.Number: {NumberStyles.Number}");
 Console.WriteLine($"NumberStyles.AllowCurrencySymbol: {NumberStyles.AllowCurrencySymbol}");
 Console.WriteLine($"Combined: {defaultStyles}");
-
-// Einzeln testen
 Console.WriteLine($"\nTesting components of NumberStyles.Number:");
 var numberComponents = new[] {
     NumberStyles.AllowLeadingWhite,
