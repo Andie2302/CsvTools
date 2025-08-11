@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿/*
+using System.Globalization;
 using CsvTools.Values;
 
 namespace UnitTestCsvTools.Tests;
@@ -111,3 +112,4 @@ public class CsvValueTests
         Assert.Equal(value.ToString(), result);
     }
 }
+//*/

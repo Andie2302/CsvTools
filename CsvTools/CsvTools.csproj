@@ -4,16 +4,7 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net9.0;net5.0;net5.0-windows;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>net5.0;net5.0-windows;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;netcoreapp3.1;netstandard2.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Update="Values\CsvOriginalValues.cs">
-        <DependentUpon>CsvValue.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Values\CsvInvariantValue.cs">
-        <DependentUpon>CsvValue.cs</DependentUpon>
-      </Compile>
-    </ItemGroup>
 
 </Project>
