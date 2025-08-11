@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using CsvTools.Scraps;
 using CsvTools.Values;
 using CsvTools.Values.Extensions;
 
@@ -75,3 +76,5 @@ foreach (var component in numberComponents)
         Console.WriteLine($"NumberStyles.Number includes: {component}");
     }
 }
+
+VisitorExamples.Example();
