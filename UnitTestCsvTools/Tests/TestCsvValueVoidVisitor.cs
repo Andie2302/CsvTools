@@ -3,7 +3,7 @@ using CsvTools.Values;
 
 namespace UnitTestCsvTools.Tests;
 
-public class TestCsvValueVoidVisitor : ICsvValueVisitor
+public class CsvTestCsvValueVoidVisitor : ICsvValueVisitor
 {
     public int VisitedCount { get; private set; }
 

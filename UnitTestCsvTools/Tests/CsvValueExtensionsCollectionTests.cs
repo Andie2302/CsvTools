@@ -14,7 +14,7 @@ public class CsvValueExtensionsCollectionTests
             new CsvValue<object>("2", 2),
             new CsvValue<object>("3", 3)
         };
-        var visitor = new TestCsvValueVisitor<string>();
+        var visitor = new CsvTestCsvValueVisitor<string>();
         var results = values.Accept(visitor).ToList();
         Assert.Equal(3, results.Count);
         Assert.Equal("Visited: 1", results[0]);
@@ -26,7 +26,7 @@ public class CsvValueExtensionsCollectionTests
     public void Accept_WithEmptyCollection_ReturnsEmptyResults()
     {
         var values = Array.Empty<CsvValue<object>>();
-        var visitor = new TestCsvValueVisitor<string>();
+        var visitor = new CsvTestCsvValueVisitor<string>();
         var results = values.Accept(visitor).ToList();
         Assert.Empty(results);
     }
@@ -40,7 +40,7 @@ public class CsvValueExtensionsCollectionTests
             new CsvValue<object>("2", 2),
             new CsvValue<object>("3", 3)
         };
-        var visitor = new TestCsvValueVoidVisitor();
+        var visitor = new CsvTestCsvValueVoidVisitor();
         values.Accept(visitor);
         Assert.Equal(3, visitor.VisitedCount);
     }

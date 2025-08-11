@@ -3,7 +3,7 @@ using CsvTools.Values;
 
 namespace UnitTestCsvTools.Tests;
 
-public class TestCsvValueVisitor<TResult> : ICsvValueVisitor<TResult>
+public class CsvTestCsvValueVisitor<TResult> : ICsvValueVisitor<TResult>
 {
     public TResult Visit<T>(CsvValue<T> value)
     {
