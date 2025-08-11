@@ -19,7 +19,7 @@ Console.WriteLine();
 // Test verschiedene Varianten
 var testCases = new[] {
     "1,2,3,4,5",
-    "1,234,567", 
+    "1,234,567",
     "1,23,4,5",
     "12,34,567",
     "1,234",
