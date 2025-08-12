@@ -192,7 +192,7 @@ public class CsvUniversalParserTests
         
         foreach (var testCase in testCases)
         {
-            var result = CsvUniversalParser.TryParseNullable<int>(testCase, out var actual);
+            var result = CsvUniversalParser.TryParseNullable<int>(testCase,CultureInfo.CurrentCulture, NumberStyles.Integer|NumberStyles.Float , out var actual);
             Assert.False(result, $"Input '{testCase}' should fail parsing but succeeded");
             Assert.Null(actual);
         }
