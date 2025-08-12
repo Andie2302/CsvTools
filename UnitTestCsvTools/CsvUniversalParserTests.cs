@@ -12,6 +12,7 @@ public class CsvUniversalParserTests
     private static readonly CultureInfo GermanCulture = CultureInfo.GetCultureInfo("de-DE");
     private static readonly CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-US");
     private static readonly CultureInfo InvariantCulture = CultureInfo.InvariantCulture;
+    private static readonly CultureInfo CurrentCulture = CultureInfo.CurrentCulture;
 
     #region Numeric Types Tests
 
@@ -38,7 +39,7 @@ public class CsvUniversalParserTests
     {
         // Act - German culture
         var resultGerman = CsvUniversalParser.TryParseNullable<int>(input, GermanCulture, out var actualGerman);
-        // Act - English culture  
+        // Act - English culture
         var resultEnglish = CsvUniversalParser.TryParseNullable<int>(input, EnglishCulture, out var actualEnglish);
 
         // Assert
@@ -177,7 +178,8 @@ public class CsvUniversalParserTests
     public void TryParseNullable_InvalidInput_ShouldFail(string input)
     {
         // Act
-        var result = CsvUniversalParser.TryParseNullable<int>(input,CultureInfo.CurrentCulture, NumberStyles.Integer|NumberStyles.Float , out var actual);
+        // Zurück zur einfachen Version im Test
+        var result = CsvUniversalParser.TryParseNullable<int>(input, out var actual);
 
         // Assert
         Assert.False(result);
@@ -189,7 +191,7 @@ public class CsvUniversalParserTests
     {
         // Test some edge cases that might be parsed differently
         var testCases = new[] { "12.34.56", "++123", "123-", "abc123def" };
-        
+
         foreach (var testCase in testCases)
         {
             var result = CsvUniversalParser.TryParseNullable<int>(testCase,CultureInfo.CurrentCulture, NumberStyles.Integer|NumberStyles.Float , out var actual);
@@ -535,8 +537,8 @@ public class CsvAdvancedParserTests
     {
         // Arrange
         var parser = CsvAdvancedParser.For<double>()
-            .WithCulture(input.Contains(',') ? 
-                CultureInfo.GetCultureInfo("de-DE") : 
+            .WithCulture(input.Contains(',') ?
+                CultureInfo.GetCultureInfo("de-DE") :
                 CultureInfo.GetCultureInfo("en-US"));
 
         // Act
@@ -554,8 +556,8 @@ public class CsvAdvancedParserTests
     {
         // Arrange
         var parser = CsvAdvancedParser.For<decimal>()
-            .WithCulture(input.Contains(',') ? 
-                CultureInfo.GetCultureInfo("de-DE") : 
+            .WithCulture(input.Contains(',') ?
+                CultureInfo.GetCultureInfo("de-DE") :
                 CultureInfo.GetCultureInfo("en-US"));
 
         // Act
@@ -685,17 +687,17 @@ public class CsvParserPerformanceTests
 
         // Act
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        
+
         for (int i = 0; i < iterations; i++)
         {
             var result = parser.Parse($"{i}.{i % 100:00}");
             Assert.True(result.Success);
         }
-        
+
         stopwatch.Stop();
 
         // Assert - Should complete in reasonable time (less than 1 second)
-        Assert.True(stopwatch.ElapsedMilliseconds < 1000, 
+        Assert.True(stopwatch.ElapsedMilliseconds < 1000,
             $"Performance test took {stopwatch.ElapsedMilliseconds}ms for {iterations} operations");
     }
 
@@ -718,7 +720,7 @@ public class CsvParserPerformanceTests
         stopwatch.Stop();
 
         // Assert - Performance should be reasonable
-        Assert.True(stopwatch.ElapsedMilliseconds < 500, 
+        Assert.True(stopwatch.ElapsedMilliseconds < 500,
             $"Universal parser took {stopwatch.ElapsedMilliseconds}ms for {iterations} operations");
     }
 }
