@@ -177,7 +177,7 @@ public class CsvUniversalParserTests
     public void TryParseNullable_InvalidInput_ShouldFail(string input)
     {
         // Act
-        var result = CsvUniversalParser.TryParseNullable<int>(input, out var actual);
+        var result = CsvUniversalParser.TryParseNullable<int>(input,CultureInfo.CurrentCulture, NumberStyles.Integer|NumberStyles.Float , out var actual);
 
         // Assert
         Assert.False(result);
