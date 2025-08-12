@@ -207,15 +207,16 @@ public static class CsvAdvancedParser
                 return ParseResult< T >.Succeeded ( null );
             }
 
-            var processedToken = _preprocessor?.Invoke ( cellToken??=string.Empty ) ?? cellToken;
+            var processedToken = _preprocessor?.Invoke ( cellToken! ) ?? cellToken!;
 
-            if ( typeof ( T ) != typeof ( int ) ) { return ParseResult< T >.Failed ( $"Type {typeof ( T ).Name} is not supported by fluent parser" ); }
+            if ( typeof ( T ) == typeof ( int ) ) {
+                var success = int.TryParse ( processedToken , NumberStyles.Any , _culture , out var intValue );
 
-            var success = int.TryParse ( processedToken , NumberStyles.Any , _culture , out var intValue );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) intValue ) : ParseResult< T >.Failed ( $"Cannot parse '{processedToken}' as {typeof ( T ).Name}" );
+                return success ? ParseResult< T >.Succeeded ( (T?) (object?) intValue ) : ParseResult< T >.Failed ( $"Cannot parse '{processedToken}' as {typeof ( T ).Name}" );
+            }
 
             // Weitere Typen können hier hinzugefügt werden
+            return ParseResult< T >.Failed ( $"Type {typeof ( T ).Name} is not supported by fluent parser" );
         }
 
         private bool IsConsideredNull ( string? value )
