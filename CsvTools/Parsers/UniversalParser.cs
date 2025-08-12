@@ -23,9 +23,13 @@ public static class CsvUniversalParser
     {
         result = null;
 
-        if ( IsNullOrEmpty ( cellToken ) ) { return true; }
+        if ( IsNullOrEmpty ( cellToken ) ) {
+            return true;
+        }
 
-        if ( !T.TryParse ( cellToken , numberStyles , culture , out var value ) ) { return false; }
+        if ( !T.TryParse ( cellToken , numberStyles , culture , out var value ) ) {
+            return false;
+        }
 
         result = value;
 
@@ -132,7 +136,9 @@ public static class CsvUniversalParser
     {
         result = null;
 
-        if ( IsNullOrEmpty ( cellToken ) ) { return true; }
+        if ( IsNullOrEmpty ( cellToken ) ) {
+            return true;
+        }
 
         result = parseFunc ( cellToken );
 
@@ -197,7 +203,9 @@ public static class CsvAdvancedParser
 
         public ParseResult< T > Parse ( string? cellToken )
         {
-            if ( IsConsideredNull ( cellToken ) ) { return ParseResult< T >.Succeeded ( null ); }
+            if ( IsConsideredNull ( cellToken ) ) {
+                return ParseResult< T >.Succeeded ( null );
+            }
 
             var processedToken = _preprocessor?.Invoke ( cellToken??=string.Empty ) ?? cellToken;
 
@@ -212,9 +220,13 @@ public static class CsvAdvancedParser
 
         private bool IsConsideredNull ( string? value )
         {
-            if ( string.IsNullOrWhiteSpace ( value ) ) { return true; }
+            if ( string.IsNullOrWhiteSpace ( value ) ) {
+                return true;
+            }
 
-            if ( _nullValues != null ) { return _nullValues.Contains ( value , StringComparer.OrdinalIgnoreCase ); }
+            if ( _nullValues != null ) {
+                return _nullValues.Contains ( value , StringComparer.OrdinalIgnoreCase );
+            }
 
             return false;
         }
@@ -230,7 +242,9 @@ public static class CsvAdvancedParser
     /// </summary>
     public static ParseResult< T > TryParse < T > ( string? cellToken ) where T : struct , INumber< T >
     {
-        if ( CsvUniversalParser.TryParseNullable< T > ( cellToken , out var result ) ) { return ParseResult< T >.Succeeded ( result ); }
+        if ( CsvUniversalParser.TryParseNullable< T > ( cellToken , out var result ) ) {
+            return ParseResult< T >.Succeeded ( result );
+        }
 
         return ParseResult< T >.Failed ( $"Cannot parse '{cellToken}' as {typeof ( T ).Name}" );
     }
@@ -256,7 +270,9 @@ public static class CsvParserExtensions
     /// </summary>
     public static T ParseOrThrow < T > ( this string? value , string? parameterName = null ) where T : struct , INumber< T >
     {
-        if ( CsvUniversalParser.TryParseNullable< T > ( value , out var result ) && result.HasValue ) { return result.Value; }
+        if ( CsvUniversalParser.TryParseNullable< T > ( value , out var result ) && result.HasValue ) {
+            return result.Value;
+        }
 
         throw new FormatException ( $"Unable to parse '{value}' as {typeof ( T ).Name}" + ( parameterName != null ? $" for parameter '{parameterName}'" : "" ) );
     }
