@@ -19,17 +19,25 @@ public static class CsvUniversalParser
     /// Attempts to parse a nullable numeric value with full control over culture and number styles.
     /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
-    public static bool TryParseNullable < T > ( string? cellToken , CultureInfo culture , NumberStyles numberStyles , [ NotNullWhen ( true ) ] out T? result ) where T : struct , INumber< T >
+    public static bool TryParseNullable<T>(string? cellToken, CultureInfo culture, NumberStyles numberStyles, [NotNullWhen(true)] out T? result) where T : struct, INumber<T>
     {
-        result = new T();
+        // Schritt 1: Explizit auf Null, Leerstring oder Whitespace prüfen.
+        if (string.IsNullOrWhiteSpace(cellToken))
+        {
+            result = null;
+            return true; // Wenn der String leer ist, ist das Ergebnis 'null' und der Vorgang "erfolgreich".
+        }
 
-        if ( IsNullOrEmpty ( cellToken ) ) { return true; }
+        // Schritt 2: Den eigentlichen Parse-Versuch starten.
+        if (T.TryParse(cellToken, numberStyles, culture, out var value))
+        {
+            result = value;
+            return true; // Erfolgreich geparst, Wert wird zurückgegeben.
+        }
 
-        if ( !T.TryParse ( cellToken , numberStyles , culture , out var value ) ) { return false; }
-
-        result = value;
-
-        return true;
+        // Schritt 3: Wenn alles andere fehlschlägt, ist das Ergebnis 'null' und der Vorgang "nicht erfolgreich".
+        result = null;
+        return false;
     }
 
     /// <summary>
