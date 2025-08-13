@@ -11,7 +11,7 @@ namespace CsvTools.Parsers;
 public static class CsvUniversalParser
 {
     private static readonly CultureInfo DefaultCulture = CultureInfo.InvariantCulture;
-    private static readonly NumberStyles DefaultNumberStyles = NumberStyles.Any;
+    private static readonly NumberStyles DefaultNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent;
     private static readonly DateTimeStyles DefaultDateTimeStyles = DateTimeStyles.None;
 
     #region Numeric Types (INumber<T>)
