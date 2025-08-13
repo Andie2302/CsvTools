@@ -1,140 +1,69 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Diagnostics.CodeAnalysis;
+using static StaticCsvUniversalParserMethods;
 
-namespace CsvTools.Parsers;
-
-/// <summary>
-/// Provides universal parsing capabilities for CSV cell values with strong type safety and null handling.
-/// </summary>
-public static class CsvUniversalParser
+public static class StaticCsvUniversalParserMethods
 {
-    private static readonly CultureInfo DefaultCulture = CultureInfo.InvariantCulture;
-    private static readonly NumberStyles DefaultNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent;
-    private static readonly DateTimeStyles DefaultDateTimeStyles = DateTimeStyles.None;
+    public static readonly DateTimeStyles DefaultDateTimeStyles = DateTimeStyles.None;
+    public static readonly CultureInfo DefaultCulture = CultureInfo.InvariantCulture;
+    public static readonly NumberStyles DefaultNumberStyles = NumberStyles.Any;
 
     #region Numeric Types (INumber<T>)
-    /// <summary>
-    /// Attempts to parse a nullable numeric value with full control over culture and number styles.
-    /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
-    public static bool TryParseNullable<T>(string? cellToken, CultureInfo culture, NumberStyles numberStyles, [NotNullWhen(true)] out T? result) where T : struct, INumber<T>
+    public static bool TryParseNullable < T > ( string? cellToken , CultureInfo culture , NumberStyles numberStyles , [ NotNullWhen ( true ) ] out T? result ) where T : INumber< T >
     {
-        // Schritt 1: Explizit auf Null, Leerstring oder Whitespace prüfen.
-        if (string.IsNullOrWhiteSpace(cellToken))
-        {
-            result = null;
-            return true; // Wenn der String leer ist, ist das Ergebnis 'null' und der Vorgang "erfolgreich".
+        if ( string.IsNullOrWhiteSpace ( cellToken ) ) {
+            result = default;
+
+            return result is not null;
         }
 
-        // Schritt 2: Den eigentlichen Parse-Versuch starten.
-        if (T.TryParse(cellToken, numberStyles, culture, out var value))
-        {
+        if ( T.TryParse ( cellToken , numberStyles , culture , out var value ) ) {
             result = value;
-            return true; // Erfolgreich geparst, Wert wird zurückgegeben.
+
+            return result is not null;
         }
 
-        // Schritt 3: Wenn alles andere fehlschlägt, ist das Ergebnis 'null' und der Vorgang "nicht erfolgreich".
-        result = null;
-        return false;
+        result = default;
+
+        return result is not null;
     }
 
-    /// <summary>
-    /// Attempts to parse a nullable numeric value using default number styles.
-    /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
-    public static bool TryParseNullable < T > ( string? cellToken , CultureInfo culture , [ NotNullWhen ( true ) ] out T? result ) where T : struct , INumber< T > => TryParseNullable ( cellToken , culture , DefaultNumberStyles , out result );
+    public static bool TryParseNullable < T > ( string? cellToken , CultureInfo culture , [ NotNullWhen ( true ) ] out T? result ) where T : INumber< T > => TryParseNullable ( cellToken , culture , DefaultNumberStyles , out result );
 
-    /// <summary>
-    /// Attempts to parse a nullable numeric value using invariant culture.
-    /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
-    public static bool TryParseNullable < T > ( string? cellToken , [ NotNullWhen ( true ) ] out T? result ) where T : struct , INumber< T > => TryParseNullable ( cellToken , DefaultCulture , DefaultNumberStyles , out result );
+    public static bool TryParseNullable < T > ( string? cellToken , [ NotNullWhen ( true ) ] out T? result ) where T : INumber< T > => TryParseNullable ( cellToken , DefaultCulture , DefaultNumberStyles , out result );
     #endregion
 
     #region DateTime Types
-    /// <summary>
-    /// Attempts to parse a nullable DateTime with culture and style control.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , DateTimeStyles dateTimeStyles , [ NotNullWhen ( true ) ] out DateTime? result ) => TryParseNullableCore ( cellToken , token => DateTime.TryParse ( token , culture , dateTimeStyles , out var value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable DateTime using default styles.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , [ NotNullWhen ( true ) ] out DateTime? result ) => TryParseNullable ( cellToken , culture , DefaultDateTimeStyles , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable DateTime using invariant culture.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out DateTime? result ) => TryParseNullable ( cellToken , DefaultCulture , DefaultDateTimeStyles , out result );
-
 #if NET6_0_OR_GREATER
-    /// <summary>
-    /// Attempts to parse a nullable DateOnly with culture and style control.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , DateTimeStyles dateTimeStyles , [ NotNullWhen ( true ) ] out DateOnly? result ) => TryParseNullableCore ( cellToken , token => DateOnly.TryParse ( token , culture , dateTimeStyles , out var value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable DateOnly using default styles.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , [ NotNullWhen ( true ) ] out DateOnly? result ) => TryParseNullable ( cellToken , culture , DefaultDateTimeStyles , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable DateOnly using invariant culture.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out DateOnly? result ) => TryParseNullable ( cellToken , DefaultCulture , DefaultDateTimeStyles , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable TimeOnly with culture and style control.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , DateTimeStyles dateTimeStyles , [ NotNullWhen ( true ) ] out TimeOnly? result ) => TryParseNullableCore ( cellToken , token => TimeOnly.TryParse ( token , culture , dateTimeStyles , out var value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable TimeOnly using default styles.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , CultureInfo culture , [ NotNullWhen ( true ) ] out TimeOnly? result ) => TryParseNullable ( cellToken , culture , DefaultDateTimeStyles , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable TimeOnly using invariant culture.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out TimeOnly? result ) => TryParseNullable ( cellToken , DefaultCulture , DefaultDateTimeStyles , out result );
 #endif
     #endregion
 
     #region Special Types
-    /// <summary>
-    /// Attempts to parse a nullable Guid.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out Guid? result ) => TryParseNullableCore ( cellToken , token => Guid.TryParse ( token , out var value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable boolean value.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out bool? result ) => TryParseNullableCore ( cellToken , token => bool.TryParse ( token , out var value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable character.
-    /// </summary>
     public static bool TryParseNullable ( string? cellToken , [ NotNullWhen ( true ) ] out char? result ) => TryParseNullableCore ( cellToken , token => char.TryParse ( token , out var value ) ? value : null , out result );
     #endregion
 
     #region Enum Types
-    /// <summary>
-    /// Attempts to parse a nullable enum with case sensitivity control.
-    /// </summary>
     public static bool TryParseNullableEnum < T > ( string? cellToken , bool ignoreCase , [ NotNullWhen ( true ) ] out T? result ) where T : struct , Enum => TryParseNullableCore ( cellToken , token => Enum.TryParse ( token , ignoreCase , out T value ) ? value : null , out result );
-
-    /// <summary>
-    /// Attempts to parse a nullable enum with case sensitivity.
-    /// </summary>
-    public static bool TryParseNullableEnum < T > ( string? cellToken , [ NotNullWhen ( true ) ] out T? result ) where T : struct , Enum => TryParseNullableEnum ( cellToken , ignoreCase : false , out result );
+    public static bool TryParseNullableEnum < T > ( string? cellToken , [ NotNullWhen ( true ) ] out T? result ) where T : struct , Enum => TryParseNullableEnum ( cellToken , false , out result );
     #endregion
 
     #region Core Helper Methods
-    /// <summary>
-    /// Core parsing logic that handles null/empty validation and delegates to specific parsers.
-    /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
     private static bool TryParseNullableCore < T > ( string? cellToken , Func< string , T? > parseFunc , [ NotNullWhen ( true ) ] out T? result ) where T : struct
     {
@@ -147,241 +76,99 @@ public static class CsvUniversalParser
         return result.HasValue;
     }
 
-    /// <summary>
-    /// Optimized null/empty check that handles common CSV empty representations.
-    /// </summary>
     [ MethodImpl ( MethodImplOptions.AggressiveInlining ) ]
-    private static bool IsNullOrEmpty ( [ NotNullWhen ( false ) ] string? value ) => string.IsNullOrWhiteSpace ( value );
+    private static bool IsNullOrEmpty ( [ NotNullWhen ( false ) ] string? value ) { return string.IsNullOrWhiteSpace ( value ); }
     #endregion
+
+    public static string DefaultParseErrorMessage < T > ( string token ) => $"Cannot parse '{token}' as {typeof ( T ).Name}";
+    public static ParseResult< T > Succeeded < T > ( T? value ) where T : struct => new ParseResult< T > ( true , value );
+    public static ParseResult< T > Failed < T > ( string? errorMessage = null ) where T : struct => new ParseResult< T > ( false , default , errorMessage );
+    public static ParseResult< T > ParseFailed < T > ( string token ) where T : struct => Failed< T > ( DefaultParseErrorMessage< T > ( token ) );
+
+    public static ParseResult< T > TryGenericParse < T > ( string token ) where T : struct , INumber< T >
+    {
+        try { return TryParseNullable< T > ( token , DefaultCulture , out var result ) ? Succeeded< T > ( result ) : Failed< T > ( $"Cannot parse '{token}' as {typeof ( T ).Name}" ); }
+        catch { return Failed< T > ( $"Type {typeof ( T ).Name} is not supported by fluent parser" ); }
+    }
+
+    public static ParseResult< int > ParseInt32 ( string token ) => int.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< int > ( value ) : ParseFailed< int > ( token );
+    public static ParseResult< long > ParseInt64 ( string token ) => long.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< long > ( value ) : ParseFailed< long > ( token );
+    public static ParseResult< short > ParseInt16 ( string token ) => short.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< short > ( value ) : ParseFailed< short > ( token );
+    public static ParseResult< byte > ParseByte ( string token ) => byte.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< byte > ( value ) : ParseFailed< byte > ( token );
+    public static ParseResult< sbyte > ParseSByte ( string token ) => sbyte.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< sbyte > ( value ) : ParseFailed< sbyte > ( token );
+    public static ParseResult< uint > ParseUInt32 ( string token ) => uint.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< uint > ( value ) : ParseFailed< uint > ( token );
+    public static ParseResult< ulong > ParseUInt64 ( string token ) => ulong.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< ulong > ( value ) : ParseFailed< ulong > ( token );
+    public static ParseResult< ushort > ParseUInt16 ( string token ) => ushort.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< ushort > ( value ) : ParseFailed< ushort > ( token );
+    public static ParseResult< float > ParseSingle ( string token ) => float.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< float > ( value ) : ParseFailed< float > ( token );
+    public static ParseResult< double > ParseDouble ( string token ) => double.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< double > ( value ) : ParseFailed< double > ( token );
+    public static ParseResult< decimal > ParseDecimal ( string token ) => decimal.TryParse ( token , DefaultNumberStyles , DefaultCulture , out var value ) ? Succeeded< decimal > ( value ) : ParseFailed< decimal > ( token );
+    public static ParseResult< DateTime > ParseDateTime ( string token ) => DateTime.TryParse ( token , DefaultCulture , DateTimeStyles.None , out var value ) ? Succeeded< DateTime > ( value ) : ParseFailed< DateTime > ( token );
+    public static ParseResult< Guid > ParseGuid ( string token ) => Guid.TryParse ( token , out var value ) ? Succeeded< Guid > ( value ) : ParseFailed< Guid > ( token );
+    public static ParseResult< bool > ParseBoolean ( string token ) => bool.TryParse ( token , out var value ) ? Succeeded< bool > ( value ) : ParseFailed< bool > ( token );
+
+    // public static implicit operator bool (ParseResult result) { return result.Success; }
+    public static ParserBuilder< T > For < T >() where T : struct , INumber< T > => new ParserBuilder< T >();
+    public static ParseResult< T > TryParse < T > ( string? cellToken ) where T : struct , INumber< T > => TryParseNullable< T > ( cellToken , out var result ) ? Succeeded< T > ( result ) : Failed< T > ( $"Cannot parse '{cellToken}' as {typeof ( T ).Name}" );
+    public static T? ParseOrNull < T > ( this string? value ) where T : INumber< T > => TryParseNullable< T > ( value , out var result ) ? result : default;
+    public static T? ParseOrDefault < T > ( this string? value , T? defaultValue = default ) where T : INumber< T > => TryParseNullable< T > ( value , out var result ) ? result ?? defaultValue : defaultValue;
+    public static T ParseOrThrow < T > ( this string? value , string? parameterName = null ) where T : INumber< T > => TryParseNullable< T > ( value , out var result ) && result.HasValue ? result.Value : throw new FormatException ( $"Unable to parse '{value}' as {typeof ( T ).Name}" + ( parameterName != null ? $" for parameter '{parameterName}'" : "" ) );
 }
 
-/// <summary>
-/// Advanced CSV parser with fluent API and result pattern.
-/// </summary>
+public static class CsvUniversalParser
+{ }
+
+public readonly record struct ParseResult < T > ( bool Success , T? Value , string? ErrorMessage = null ) where T : struct
+{
+    public TResult Match < TResult > ( Func< T? , TResult > onSuccess , Func< string? , TResult > onFailure ) => Success ? onSuccess ( Value ) : onFailure ( ErrorMessage );
+}
+
+public sealed class ParserBuilder < T > where T : struct , INumber< T >
+{
+    private string[]? _nullValues;
+    private Func< string , string >? _preprocessor;
+
+    public ParserBuilder< T > WithNullValues ( params string[] nullValues )
+    {
+        _nullValues = nullValues;
+
+        return this;
+    }
+
+    public ParserBuilder< T > WithPreprocessor ( Func< string , string > preprocessor )
+    {
+        _preprocessor = preprocessor ?? throw new ArgumentNullException ( nameof ( preprocessor ) );
+
+        return this;
+    }
+
+    public ParseResult< T > Parse ( string? cellToken )
+    {
+        if ( IsConsideredNull ( cellToken ) ) { return ParseResult< T >.Succeeded ( null ); }
+
+        var processedToken = _preprocessor?.Invoke ( cellToken ?? string.Empty ) ?? cellToken ?? string.Empty;
+
+        return typeof ( T ) switch
+        {
+            int => ParseInt32< int > ( processedToken ) ,
+            long => ParseInt64< long > ( processedToken ) ,
+            short => ParseInt16< short > ( processedToken ) ,
+            byte => ParseByte< byte > ( processedToken ) ,
+            sbyte => ParseSByte< sbyte > ( processedToken ) ,
+            uint => ParseUInt32< uint > ( processedToken ) ,
+            ulong => ParseUInt64< ulong > ( processedToken ) ,
+            ushort => ParseUInt16< ushort > ( processedToken ) ,
+            float => ParseSingle< float > ( processedToken ) ,
+            double => ParseDouble< double > ( processedToken ) ,
+            decimal => ParseDecimal< decimal > ( processedToken ) ,
+            DateTime => ParseDateTime< DateTime > ( processedToken ) ,
+            Guid => ParseGuid< Guid > ( processedToken ) ,
+            bool => ParseBoolean< bool > ( processedToken ) ,
+            _ => TryGenericParse< T > ( processedToken )
+        };
+    }
+
+    private bool IsConsideredNull ( string? value ) => string.IsNullOrWhiteSpace ( value ) || _nullValues != null && _nullValues.Contains ( value , StringComparer.OrdinalIgnoreCase );
+}
+
 public static class CsvAdvancedParser
-{
-    /// <summary>
-    /// Represents the result of a parsing operation.
-    /// </summary>
-    /// <typeparam name="T">The target type.</typeparam>
-    public readonly record struct ParseResult < T > ( bool Success , T? Value , string? ErrorMessage = null ) where T : struct
-    {
-        public static implicit operator bool ( ParseResult< T > result ) => result.Success;
-        public static ParseResult< T > Succeeded ( T? value ) => new( true , value );
-        public static ParseResult< T > Failed ( string? errorMessage = null ) => new( false , default , errorMessage );
-        public TResult Match < TResult > ( Func< T? , TResult > onSuccess , Func< string? , TResult > onFailure ) => Success ? onSuccess ( Value ) : onFailure ( ErrorMessage );
-    }
-
-    /// <summary>
-    /// Fluent parser builder for complex parsing scenarios.
-    /// </summary>
-    /// <typeparam name="T">The target type.</typeparam>
-    public sealed class ParserBuilder < T > where T : struct , INumber< T >
-    {
-        private CultureInfo _culture = CultureInfo.InvariantCulture;
-        private string[]? _nullValues;
-        private Func< string , string >? _preprocessor;
-
-        public ParserBuilder< T > WithCulture ( CultureInfo culture )
-        {
-            _culture = culture ?? throw new ArgumentNullException ( nameof ( culture ) );
-
-            return this;
-        }
-
-        public ParserBuilder< T > WithNullValues ( params string[] nullValues )
-        {
-            _nullValues = nullValues;
-
-            return this;
-        }
-
-        public ParserBuilder< T > WithPreprocessor ( Func< string , string > preprocessor )
-        {
-            _preprocessor = preprocessor ?? throw new ArgumentNullException ( nameof ( preprocessor ) );
-
-            return this;
-        }
-
-        public ParseResult< T > Parse ( string? cellToken )
-        {
-            if ( IsConsideredNull ( cellToken ) ) { return ParseResult< T >.Succeeded ( null ); }
-
-            var processedToken = _preprocessor?.Invoke ( cellToken ?? string.Empty ) ?? cellToken ?? string.Empty;
-
-            // Direkte Typ-Behandlung für alle unterstützten numerischen Typen
-            return typeof ( T ).Name switch
-            {
-                nameof ( Int32 ) => ParseInt32 ( processedToken ) ,
-                nameof ( Int64 ) => ParseInt64 ( processedToken ) ,
-                nameof ( Int16 ) => ParseInt16 ( processedToken ) ,
-                nameof ( Byte ) => ParseByte ( processedToken ) ,
-                nameof ( SByte ) => ParseSByte ( processedToken ) ,
-                nameof ( UInt32 ) => ParseUInt32 ( processedToken ) ,
-                nameof ( UInt64 ) => ParseUInt64 ( processedToken ) ,
-                nameof ( UInt16 ) => ParseUInt16 ( processedToken ) ,
-                nameof ( Single ) => ParseSingle ( processedToken ) ,
-                nameof ( Double ) => ParseDouble ( processedToken ) ,
-                nameof ( Decimal ) => ParseDecimal ( processedToken ) ,
-                nameof ( DateTime ) => ParseDateTime ( processedToken ) ,
-                nameof ( Guid ) => ParserBuilder< T >.ParseGuid ( processedToken ) ,
-                nameof ( Boolean ) => ParserBuilder< T >.ParseBoolean ( processedToken ) ,
-                _ => TryGenericParse ( processedToken )
-            };
-        }
-
-        private ParseResult< T > TryGenericParse ( string token )
-        {
-            // Fallback: Versuche den universellen Parser zu verwenden
-            try {
-                var success = CsvUniversalParser.TryParseNullable< T > ( token , _culture , out var result );
-
-                return success ? ParseResult< T >.Succeeded ( result ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as {typeof ( T ).Name}" );
-            }
-            catch { return ParseResult< T >.Failed ( $"Type {typeof ( T ).Name} is not supported by fluent parser" ); }
-        }
-
-        private ParseResult< T > ParseInt32 ( string token )
-        {
-            var success = int.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Int32" );
-        }
-
-        private ParseResult< T > ParseInt64 ( string token )
-        {
-            var success = long.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Int64" );
-        }
-
-        private ParseResult< T > ParseInt16 ( string token )
-        {
-            var success = short.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Int16" );
-        }
-
-        private ParseResult< T > ParseByte ( string token )
-        {
-            var success = byte.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Byte" );
-        }
-
-        private ParseResult< T > ParseSByte ( string token )
-        {
-            var success = sbyte.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as SByte" );
-        }
-
-        private ParseResult< T > ParseUInt32 ( string token )
-        {
-            var success = uint.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as UInt32" );
-        }
-
-        private ParseResult< T > ParseUInt64 ( string token )
-        {
-            var success = ulong.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as UInt64" );
-        }
-
-        private ParseResult< T > ParseUInt16 ( string token )
-        {
-            var success = ushort.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as UInt16" );
-        }
-
-        private ParseResult< T > ParseSingle ( string token )
-        {
-            var success = float.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Single" );
-        }
-
-        private ParseResult< T > ParseDouble ( string token )
-        {
-            var success = double.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Double" );
-        }
-
-        private ParseResult< T > ParseDecimal ( string token )
-        {
-            var success = decimal.TryParse ( token , NumberStyles.Any , _culture , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Decimal" );
-        }
-
-        private ParseResult< T > ParseDateTime ( string token )
-        {
-            var success = DateTime.TryParse ( token , _culture , DateTimeStyles.None , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as DateTime" );
-        }
-
-        private static ParseResult< T > ParseGuid ( string token )
-        {
-            var success = Guid.TryParse ( token , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Guid" );
-        }
-
-        private static ParseResult< T > ParseBoolean ( string token )
-        {
-            var success = bool.TryParse ( token , out var value );
-
-            return success ? ParseResult< T >.Succeeded ( (T?) (object?) value ) : ParseResult< T >.Failed ( $"Cannot parse '{token}' as Boolean" );
-        }
-
-        private bool IsConsideredNull ( string? value )
-        {
-            if ( string.IsNullOrWhiteSpace ( value ) ) { return true; }
-
-            if ( _nullValues != null ) { return _nullValues.Contains ( value , StringComparer.OrdinalIgnoreCase ); }
-
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Creates a fluent parser builder for the specified type.
-    /// </summary>
-    public static ParserBuilder< T > For < T >() where T : struct , INumber< T > => new();
-
-    /// <summary>
-    /// Quick parse with the result pattern.
-    /// </summary>
-    public static ParseResult< T > TryParse < T > ( string? cellToken ) where T : struct , INumber< T > => CsvUniversalParser.TryParseNullable< T > ( cellToken , out var result ) ? ParseResult< T >.Succeeded ( result ) : ParseResult< T >.Failed ( $"Cannot parse '{cellToken}' as {typeof ( T ).Name}" );
-}
-
-/// <summary>
-/// Extension methods for enhanced usability.
-/// </summary>
-public static class CsvParserExtensions
-{
-    /// <summary>
-    /// Tries to parse the string as the specified nullable type.
-    /// </summary>
-    public static T? ParseOrNull < T > ( this string? value ) where T : struct , INumber< T > => CsvUniversalParser.TryParseNullable< T > ( value , out var result ) ? result : null;
-
-    /// <summary>
-    /// Tries to parse the string as the specified type with a fallback value.
-    /// </summary>
-    public static T ParseOrDefault < T > ( this string? value , T defaultValue = default ) where T : struct , INumber< T > => CsvUniversalParser.TryParseNullable< T > ( value , out var result ) ? result ?? defaultValue : defaultValue;
-
-    /// <summary>
-    /// Parses the string and throws an exception if parsing fails.
-    /// </summary>
-    public static T ParseOrThrow < T > ( this string? value , string? parameterName = null ) where T : struct , INumber< T >
-    {
-        if ( CsvUniversalParser.TryParseNullable< T > ( value , out var result ) && result.HasValue ) { return result.Value; }
-
-        throw new FormatException ( $"Unable to parse '{value}' as {typeof ( T ).Name}" + ( parameterName != null ? $" for parameter '{parameterName}'" : "" ) );
-    }
-}
+{ }

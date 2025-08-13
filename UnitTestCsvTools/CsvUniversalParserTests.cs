@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using CsvTools.Parsers;
-using Xunit;
+﻿using System.Diagnostics;
+using System.Globalization;
 
 namespace UnitTestCsvTools;
 
@@ -17,11 +16,11 @@ public class CsvUniversalParserTests
     #region Numeric Types Tests
 
     [Theory]
-    [InlineData("123", 123)]
-    [InlineData("0", 0)]
-    [InlineData("-456", -456)]
-    [InlineData("2147483647", 2147483647)] // Int32.MaxValue
-    [InlineData("-2147483648", -2147483648)] // Int32.MinValue
+    [InlineData( [ "123" , 123 ] )]
+    [InlineData( [ "0" , 0 ] )]
+    [InlineData( [ "-456" , -456 ] )]
+    [InlineData( [ "2147483647" , 2147483647 ] )] // Int32.MaxValue
+    [InlineData( [ "-2147483648" , -2147483648 ] )] // Int32.MinValue
     public void TryParseNullable_Int32_ValidValues_ShouldSucceed(string input, int expected)
     {
         // Act
@@ -33,8 +32,8 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("1.234", 1234)] // German culture - dot as thousand separator
-    [InlineData("1,234", 1234)] // English culture - comma as thousand separator
+    [InlineData( [ "1.234" , 1234 ] )] // German culture - dot as thousand separator
+    [InlineData( [ "1,234" , 1234 ] )] // English culture - comma as thousand separator
     public void TryParseNullable_Int32_WithCulture_ShouldSucceed(string input, int expected)
     {
         // Act - German culture
@@ -56,11 +55,11 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("123.45", 123.45)]
-    [InlineData("0.0", 0.0)]
-    [InlineData("-456.789", -456.789)]
-    [InlineData("1.7976931348623157E+308", double.MaxValue)]
-    [InlineData("-1.7976931348623157E+308", double.MinValue)]
+    [InlineData( [ "123.45" , 123.45 ] )]
+    [InlineData( [ "0.0" , 0.0 ] )]
+    [InlineData( [ "-456.789" , -456.789 ] )]
+    [InlineData( [ "1.7976931348623157E+308" , double.MaxValue ] )]
+    [InlineData( [ "-1.7976931348623157E+308" , double.MinValue ] )]
     public void TryParseNullable_Double_ValidValues_ShouldSucceed(string input, double expected)
     {
         // Act
@@ -68,14 +67,14 @@ public class CsvUniversalParserTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal(expected, actual.GetValueOrDefault(), precision: 10);
+        Assert.Equal(expected, actual.GetValueOrDefault(), 10);
     }
 
     [Theory]
-    [InlineData("1.234,56", 1234.56)] // German format
-    [InlineData("1,234.56", 1234.56)] // English format
-    [InlineData("0,5", 0.5)] // German decimal
-    [InlineData("0.5", 0.5)] // English decimal
+    [InlineData( [ "1.234,56" , 1234.56 ] )] // German format
+    [InlineData( [ "1,234.56" , 1234.56 ] )] // English format
+    [InlineData( [ "0,5" , 0.5 ] )] // German decimal
+    [InlineData( [ "0.5" , 0.5 ] )] // English decimal
     public void TryParseNullable_Double_CultureSpecific_ShouldSucceed(string input, double expected)
     {
         // Act
@@ -84,13 +83,13 @@ public class CsvUniversalParserTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal(expected, actual.GetValueOrDefault(), precision: 2);
+        Assert.Equal(expected, actual.GetValueOrDefault(), 2);
     }
 
     [Theory]
-    [InlineData("123.45", "123.45")]
-    [InlineData("0.0", "0.0")]
-    [InlineData("999999999999999999999999999.99", "999999999999999999999999999.99")]
+    [InlineData( [ "123.45" , "123.45" ] )]
+    [InlineData( [ "0.0" , "0.0" ] )]
+    [InlineData( [ "999999999999999999999999999.99" , "999999999999999999999999999.99" ] )]
     public void TryParseNullable_Decimal_ValidValues_ShouldSucceed(string input, string expectedStr)
     {
         // Arrange
@@ -105,9 +104,9 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("123.45", "123.45")]
-    [InlineData("0.0", "0.0")]
-    [InlineData("3.40282347E+38", "3.40282347E+38")] // float.MaxValue
+    [InlineData( [ "123.45" , "123.45" ] )]
+    [InlineData( [ "0.0" , "0.0" ] )]
+    [InlineData( [ "3.40282347E+38" , "3.40282347E+38" ] )] // float.MaxValue
     public void TryParseNullable_Float_ValidValues_ShouldSucceed(string input, string expectedStr)
     {
         // Arrange
@@ -118,13 +117,13 @@ public class CsvUniversalParserTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal(expected, actual.GetValueOrDefault(), precision: 5);
+        Assert.Equal(expected, actual.GetValueOrDefault(), 5);
     }
 
     [Theory]
-    [InlineData("9223372036854775807", 9223372036854775807L)] // long.MaxValue
-    [InlineData("-9223372036854775808", -9223372036854775808L)] // long.MinValue
-    [InlineData("0", 0L)]
+    [InlineData( [ "9223372036854775807" , 9223372036854775807L ] )] // long.MaxValue
+    [InlineData( [ "-9223372036854775808" , -9223372036854775808L ] )] // long.MinValue
+    [InlineData( [ "0" , 0L ] )]
     public void TryParseNullable_Int64_ValidValues_ShouldSucceed(string input, long expected)
     {
         // Act
@@ -218,9 +217,9 @@ public class CsvUniversalParserTests
     #region DateTime Tests
 
     [Theory]
-    [InlineData("2023-12-25", "2023-12-25")]
-    [InlineData("12/25/2023", "2023-12-25")]
-    [InlineData("25.12.2023", "2023-12-25")]
+    [InlineData( [ "2023-12-25" , "2023-12-25" ] )]
+    [InlineData( [ "12/25/2023" , "2023-12-25" ] )]
+    [InlineData( [ "25.12.2023" , "2023-12-25" ] )]
     public void TryParseNullable_DateTime_ValidValues_ShouldSucceed(string input, string expectedStr)
     {
         // Arrange
@@ -241,12 +240,12 @@ public class CsvUniversalParserTests
     #region Special Types Tests
 
     [Theory]
-    [InlineData("true", true)]
-    [InlineData("false", false)]
-    [InlineData("True", true)]
-    [InlineData("False", false)]
-    [InlineData("TRUE", true)]
-    [InlineData("FALSE", false)]
+    [InlineData( [ "true" , true ] )]
+    [InlineData( [ "false" , false ] )]
+    [InlineData( [ "True" , true ] )]
+    [InlineData( [ "False" , false ] )]
+    [InlineData( [ "TRUE" , true ] )]
+    [InlineData( [ "FALSE" , false ] )]
     public void TryParseNullable_Boolean_ValidValues_ShouldSucceed(string input, bool expected)
     {
         // Act
@@ -275,9 +274,9 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("A", 'A')]
-    [InlineData("z", 'z')]
-    [InlineData("5", '5')]
+    [InlineData( [ "A" , 'A' ] )]
+    [InlineData( [ "z" , 'z' ] )]
+    [InlineData( [ "5" , '5' ] )]
     public void TryParseNullable_Char_ValidValues_ShouldSucceed(string input, char expected)
     {
         // Act
@@ -311,9 +310,9 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("Value1", TestEnum.Value1)]
-    [InlineData("Value2", TestEnum.Value2)]
-    [InlineData("CamelCaseValue", TestEnum.CamelCaseValue)]
+    [InlineData( [ "Value1" , TestEnum.Value1 ] )]
+    [InlineData( [ "Value2" , TestEnum.Value2 ] )]
+    [InlineData( [ "CamelCaseValue" , TestEnum.CamelCaseValue ] )]
     public void TryParseNullableEnum_ValidValues_ShouldSucceed(string input, TestEnum expected)
     {
         // Act
@@ -325,13 +324,13 @@ public class CsvUniversalParserTests
     }
 
     [Theory]
-    [InlineData("value1", TestEnum.Value1)]
-    [InlineData("VALUE2", TestEnum.Value2)]
-    [InlineData("camelcasevalue", TestEnum.CamelCaseValue)]
+    [InlineData( [ "value1" , TestEnum.Value1 ] )]
+    [InlineData( [ "VALUE2" , TestEnum.Value2 ] )]
+    [InlineData( [ "camelcasevalue" , TestEnum.CamelCaseValue ] )]
     public void TryParseNullableEnum_IgnoreCase_ShouldSucceed(string input, TestEnum expected)
     {
         // Act
-        var result = CsvUniversalParser.TryParseNullableEnum<TestEnum>(input, ignoreCase: true, out var actual);
+        var result = CsvUniversalParser.TryParseNullableEnum<TestEnum>(input, true, out var actual);
 
         // Assert
         Assert.True(result);
@@ -383,14 +382,14 @@ public class CsvAdvancedParserTests
 
         // Act & Assert
         var successValue = successResult.Match(
-            onSuccess: val => $"Success: {val}",
-            onFailure: err => $"Failure: {err}"
+            val => $"Success: {val}",
+            err => $"Failure: {err}"
         );
         Assert.Equal("Success: 42", successValue);
 
         var failureValue = failureResult.Match(
-            onSuccess: val => $"Success: {val}",
-            onFailure: err => $"Failure: {err}"
+            val => $"Success: {val}",
+            err => $"Failure: {err}"
         );
         Assert.Equal("Failure: Error", failureValue);
     }
@@ -619,9 +618,9 @@ public class CsvAdvancedParserTests
 public class CsvParserExtensionsTests
 {
     [Theory]
-    [InlineData("123", 123)]
-    [InlineData("", null)]
-    [InlineData("invalid", null)]
+    [InlineData( [ "123" , 123 ] )]
+    [InlineData( [ "" , null ] )]
+    [InlineData( [ "invalid" , null ] )]
     public void ParseOrNull_ShouldReturnExpectedValue(string input, int? expected)
     {
         // Act
@@ -632,13 +631,13 @@ public class CsvParserExtensionsTests
     }
 
     [Theory]
-    [InlineData("123", 123)]
-    [InlineData("", 999)]
-    [InlineData("invalid", 999)]
+    [InlineData( [ "123" , 123 ] )]
+    [InlineData( [ "" , 999 ] )]
+    [InlineData( [ "invalid" , 999 ] )]
     public void ParseOrDefault_ShouldReturnExpectedValue(string input, int expected)
     {
         // Act
-        var result = input.ParseOrDefault<int>(999);
+        var result = input.ParseOrDefault(999);
 
         // Assert
         Assert.Equal(expected, result);
@@ -686,7 +685,7 @@ public class CsvParserPerformanceTests
             .WithCulture(CultureInfo.GetCultureInfo("en-US"));
 
         // Act
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
 
         for (int i = 0; i < iterations; i++)
         {
@@ -707,7 +706,7 @@ public class CsvParserPerformanceTests
     public void UniversalParser_RepeatedCalls_ShouldBeFast(int iterations)
     {
         // Arrange
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
 
         // Act
         for (int i = 0; i < iterations; i++)
@@ -746,10 +745,10 @@ public class CsvParserOriginalProblemTests
     }
 
     [Theory]
-    [InlineData("1.234,56€", 1234.56)]
-    [InlineData("123,45€", 123.45)]
-    [InlineData("0,50€", 0.50)]
-    [InlineData("-1.000,00€", -1000.00)]
+    [InlineData( [ "1.234,56€" , 1234.56 ] )]
+    [InlineData( [ "123,45€" , 123.45 ] )]
+    [InlineData( [ "0,50€" , 0.50 ] )]
+    [InlineData( [ "-1.000,00€" , -1000.00 ] )]
     public void OriginalProblem_VariousGermanCurrencies_ShouldWork(string input, double expected)
     {
         var parser = CsvAdvancedParser.For<double>()

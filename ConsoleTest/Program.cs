@@ -1,7 +1,6 @@
 ﻿// Statt int für "1.234,56€"
 
 using System.Globalization;
-using CsvTools.Parsers;
 
 var result1 = CsvAdvancedParser.For< double >().WithCulture ( CultureInfo.GetCultureInfo ( "de-DE" ) ).WithNullValues ( "N/A" , "NULL" , "-" ).WithPreprocessor ( s => s.Replace ( "€" , "" ) ).Parse ( "1.234,56€" );
 Console.WriteLine ( result1.Value );
@@ -21,9 +20,9 @@ Console.WriteLine ( intResult.Value );
 Console.WriteLine ( decimalResult.Value );
 Console.WriteLine ( nullResult.Value );
 Console.WriteLine();
-Console.WriteLine ( "intResult:"+intResult.ToString() );
-Console.WriteLine ( "decimalResult:"+decimalResult.ToString() );
-Console.WriteLine ( "nullResult:"+nullResult.ToString() );
+Console.WriteLine ( "intResult:"+intResult );
+Console.WriteLine ( "decimalResult:"+decimalResult );
+Console.WriteLine ( "nullResult:"+nullResult );
 Console.WriteLine ( intResult.Value == null ? "intResult: null" : "intResult: not null" );
 Console.WriteLine ( decimalResult.Value == null ? "decimalResult: null" : "decimalResult: not null" );
 Console.WriteLine ( nullResult.Value == null ? "nullResult: null" : "nullResult: not null" );
